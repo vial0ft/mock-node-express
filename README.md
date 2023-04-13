@@ -2,6 +2,10 @@
 dummy mock server with node and express. It can generate some data.
 
 
+# Parameters
+
+`PORT` - port of server (`5000` if `PORT` is not defined)
+
 # run with nodejs
 
 ```
