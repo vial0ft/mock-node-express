@@ -2,6 +2,13 @@
 dummy mock server with node and express. It can generate some data.
 
 
+# run with nodejs
+
+```
+npm install 
+node server.js
+```
+
 # docker
 You can run it as docker container with: 
 
