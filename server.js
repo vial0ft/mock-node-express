@@ -1,20 +1,39 @@
-const express = require('express'); 
-const gens = require('./gen/gen')
-const app = express();              
-const port = process.env.PORT || 5000;                  
+const express = require('express');
+const {build} = require('./src/routes/routeBuilder')
+const {
+    getAllRoutesInfo,
+    getRouteInfo,
+    deleteRoute
+} = require('./src/routes/routesUtils')
+const app = express();
 
+const port = process.env.PORT || 5000;
+
+app.use(express.json())
 
 app.get('/', (req, res) => {
-            
-    res.send({
-        str: gens.genString(5)(),
-        int: gens.genInteger(5, 10)(),
-        float : gens.getFloat(-10, 0, 3)(),
-        arr: gens.genArray(10, gens.genString(10))()
-    })      
-                                                        
+    console.log(app._router.stack)
+    res.send("ok")
 });
 
-app.listen(port, () => {            
-    console.log(`Now listening on port ${port}`); 
+app.post('/mock', (req, res) => {
+    console.log(req.boby)
+    let [path, method, handler] = build(req.body)
+    app[method](path, handler)
+    res.send(getRouteInfo(app._router.stack, path, method))
+})
+
+app.delete('/mock', (req, res) => {
+    const { path, method } = req.body
+    const [deleted, newStack] = deleteRoute(app._router.stack, path, method)
+    app._router.stack = newStack
+    res.send(deleted)
+})
+
+app.get('/mock', (req, res) =>
+    res.send(getAllRoutesInfo(app._router.stack))
+)
+
+app.listen(port, () => {
+    console.log(`Now listening on port ${port}`);
 });
